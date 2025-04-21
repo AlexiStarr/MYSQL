@@ -142,7 +142,7 @@ HAVING 分组后条件列表
 ORDER BY 排序字段列表
 LIMIT 分页参数
 ```
-### 基本查询
+### 基本查询（select from）
 1. 查询多个字段
    ```
    SELECT 字段1,字段2,... FROM 表名;
@@ -151,19 +151,125 @@ LIMIT 分页参数
    实际开发中最好不写*，不直观。
 2. 设置别名
    ```
-   SELECT 字段1[AS 别名1],字段2[AS 别名2],... FROM 表名;
+   SELECT 字段1[AS 别名1],字段2[AS 别名2],... FROM 表名[AS 别名];
    ```
    as可以省略，直接``select 字段 别名 from 表名;``
 3. 去除重复记录
    ```
    SELECT DISTINCT 字段列表 FROM 表名;
    ```
-### 条件查询
+### 条件查询（where）
 1. 语法
    ```
    SELECT 字段列表 FROM 表名 WHERE 条件列表;
    ```
 2. 条件
    ![image](https://github.com/user-attachments/assets/4f0ba0d5-a511-4be2-bf29-5ea479de5d69)
-   比较算符&逻辑算符
+   - 比较算符&逻辑算符 in like between and is null
+   - 注意between A and B（A <= B），从小到大的顺序，范围是[A,B]。
+   - in演示
+     ![image](https://github.com/user-attachments/assets/88624706-4e4f-4f4a-92ec-a658078610b1)
+   - like演示
+     - _用法——表示单个字符
+        ![image](https://github.com/user-attachments/assets/04071fda-1230-4ec3-944a-c0e4c60cb749)
+     - %用法——表示任意字符（长度也任意）
+       ![image](https://github.com/user-attachments/assets/8317ac80-aaaa-4b48-879e-093ad200b596)
+### 聚合函数（count max min avg sum）
+1. 介绍
+   将一列数据作为一个整体，进行纵向计算。
+2. 常见聚合函数
+    ![image](https://github.com/user-attachments/assets/98819e7a-ca82-47e9-aeaa-57ca980db5e0)
+   count、max、min、avg、sum
+3. 语法
+   ```
+   SELECT 聚合函数(字段列表) FROM 表名;
+   ```
+   注意：所有的NULL值不参与聚合函数运算。
+### 分组查询（group by having）
+1. 语法
+   ```
+   SELECT 字段列表 FROM 表名 [WHERE 条件] GROUP BY 分组字段名 [HAVING 分组后过滤条件];
+   ```
+2. WHERE & HAVING 区别
+   - 时间不同：where过滤分组前，having过滤分组后；
+   - 条件不同：where不能判断聚合函数，having可以。
+3. 例
+   ![image](https://github.com/user-attachments/assets/996d0eb4-8d88-415c-896a-911d998f9523)
+   ![image](https://github.com/user-attachments/assets/cf9c9d18-45c2-4b6c-873b-ea8ee0c27f4c)
+   注意：
+   1. 执行顺序：where > 聚合函数 > having
+   2. 分组后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义。![026FDBD3](https://github.com/user-attachments/assets/ec95a0f0-bdea-411d-bc4e-44d8f8bc1a5e)（这个大猩猩笑鼠我了）
+### 排序查询（order by）
+1. 语法
+   ```
+   SELECT 字段列表 FROM 表名 ORDER BY 字段一 排序方式1,字段2 排序方式2..;
+   ```
+   支持多字段排序。
+2. 排序方式
+   - ASC 升序（默认）
+   - DESC 降序
+   如果是多字段排序，当第一个字段值相同时，才会根据第二个字段进行排序。
+### 分页查询（limit）
+- 语法
+  ```
+  SELECT 字段列表 FROM 表名 LIMIT 起始索引,每页记录数;
+  ```
+  ![image](https://github.com/user-attachments/assets/3474cfd4-9e2d-48e6-858a-cc3f105a3439)
+  注意：
+  1. 起始索引从0开始，起始索引 = （查询页码 - 1）* 每页显示记录数；
+  2. 分页查询是数据库的方言，mysql中是limit；
+  3. 若查询的是第一页数据，起始索引可省略，直接简写为limit 10。
+### 执行顺序
+1. 编写顺序是： select from where group by having order by limit
+2. 执行顺序是：
+   ![image](https://github.com/user-attachments/assets/a81df2da-d84d-4a75-9789-c4723411891d)
+   通过起别名可以验证：
+   ![image](https://github.com/user-attachments/assets/85b84a32-26a2-4b1b-81a9-79b142df2635)
+## DCL
+管理数据库用户，控制用户访问权限。
+### 管理用户
+1. 查询用户
+   ```
+   USE MYSQL;
+   SELECT * FROM USER;
+   ```
+2. 创建用户
+   ```
+   CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';
+   ```
+   主机名为localhost该用户只能在本地访问数据库，要想在任意主机访问，使用%。
+3. 修改用户密码
+   ```
+   ALTER USER '用户名'@'主机名' IDENTIFIED WITH MYSQL_NATIVE_PASSWORD BY '新密码';
+   ```
+4. 删除用户
+   ```
+   DROP USER '用户名'@'主机名';
+   ```
+5. 注意
+   - 主机名可用%通配
+   - DCL开发人员使用较少，主要是DBA（数据管理员）在使用。
+### 权限控制
+![image](https://github.com/user-attachments/assets/9351b607-b79d-4baa-b34d-ca18c97201d1)
+1. 查询权限
+   ```
+   SHOW GRANTS FOR '用户名'@'主机名';
+   ```
+   USAGE 表示没有权限，仅仅能连接mysql并登录
+2. 授予权限
+   ```
+   GRANT 权限列表 ON 数据库名.表名 TO '用户名'@'主机名';
+   ```
+3. 撤销权限
+   ```
+   REVOKE 权限列表 ON 数据库名.表名 FROM '用户名'@'主机名';
+   ```
+4. 注意
+   - 多个权限间需用逗号分隔
+   - 授权时，数据库名和表名可用*通配
+
    
+
+   
+
+     
