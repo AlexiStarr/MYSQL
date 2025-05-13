@@ -181,7 +181,10 @@ LIMIT 分页参数
     ![image](https://github.com/user-attachments/assets/98819e7a-ca82-47e9-aeaa-57ca980db5e0)
    count、max、min、avg、sum
    - 注意：如果聚合函数内的是条件 ， 那么就不能用count而要用sum
-     - 例如：count(peoplesex='女')返回的是总行数（因为返回值是true还是false它都计入）；sum(peoplesex='女')则返回的是女性行数（计true为1，false为0）
+     - 例如：
+        - count(peoplesex='女')返回的是总行数（因为返回值是true还是false它都计入）；
+        - sum(peoplesex='女')则返回的是女性行数（计true为1，false为0）
+   - avg的底层就是sum(有效值)/count(有效值)
 4. 语法
    ```
    SELECT 聚合函数(字段列表) FROM 表名;
