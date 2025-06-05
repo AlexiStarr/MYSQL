@@ -57,8 +57,9 @@
 3. 数据类型
    1. 数值类型
      ![image](https://github.com/user-attachments/assets/6e3bb064-4f9d-4045-a298-63a41bb486cb)
-     (int) float double decimal
-   2. 字符串类型
+     (int) float double decimal  
+     decimal(M,D),有D位小数的M位数。
+   3. 字符串类型
      ![image](https://github.com/user-attachments/assets/4a4113ce-74b5-4f07-89f7-f81593f1c2ce)
      char varchar (blob text)
      - char vs varchar
