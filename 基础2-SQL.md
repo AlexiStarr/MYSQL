@@ -131,7 +131,7 @@ DELETE FROM 表名 [WHERE 条件]
 ```
 注意：
 1. 若没有条件会删除整张表的所有数据；
-2. delete语句不能删除某一字段的值（可以用update）
+2. delete语句不能删除某一字段的值（可以用alter table .. drop ..）
 ## DQL
 查询数据（select）  
 基本语法
