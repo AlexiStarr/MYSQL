@@ -70,6 +70,7 @@
    3. 日期类型
      ![image](https://github.com/user-attachments/assets/804a1757-880d-45bf-b35d-5f165b2fe32e)
      date（年月日） time（时分秒） year datetime（年月日时分秒） timestamp（同，最大到2038年）
+     timestamp会自动转换时间为UTC时间，便于不同时区之前时间差的计算，而datetime需要自己转换，容易出错。
 4. 修改表
   - 添加字段
     ```
